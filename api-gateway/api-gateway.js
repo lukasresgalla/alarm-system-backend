@@ -37,16 +37,34 @@ app.post('/alarmes', async (req, res) => {
   }
 });
 
-// --- Rotas para Controle de Acionamento ---
-app.get('/acionamento/estado/:id', async (req, res) => {
+app.get('/alarmes-com-estado', async (req, res) => {
   try {
-    const { id } = req.params;
-    const response = await axios.get(`http://localhost:3002/acionamento/estado/${id}`);
-    res.status(response.status).json(response.data);
+    // Passo 1: Buscar lista de alarmes
+    const alarmesResp = await axios.get('http://localhost:8082/alarmes');
+    const alarmes = alarmesResp.data;
+
+    // Passo 2: Para cada alarme, buscar seu estado atual
+    // Usar Promise.all para executar as requisições em paralelo
+    const alarmesComEstado = await Promise.all(
+      alarmes.map(async (alarme) => {
+        try {
+          const estadoResp = await axios.get(`http://localhost:3002/acionamento/estado/${alarme.id}`);
+          alarme.estadoAtual = estadoResp.data.estado;
+        } catch (error) {
+          alarme.estadoAtual = 'desconhecido'; // caso não consiga pegar o estado
+        }
+        return alarme;
+      })
+    );
+
+    // Retorna a lista com estado atual
+    res.json(alarmesComEstado);
+
   } catch (error) {
     res.status(error.response?.status || 500).json({ error: error.message });
   }
 });
+
 
 app.post('/acionamento/acionar', async (req, res) => {
   try {
