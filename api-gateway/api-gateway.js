@@ -51,7 +51,7 @@ app.get('/alarmes-com-estado', async (req, res) => {
           const estadoResp = await axios.get(`http://localhost:3002/acionamento/estado/${alarme.id}`);
           alarme.estadoAtual = estadoResp.data.estado;
         } catch (error) {
-          alarme.estadoAtual = 'desconhecido'; // caso não consiga pegar o estado
+          alarme.estadoAtual = 'desligado'; // caso não consiga pegar o estado
         }
         return alarme;
       })

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('./database');
 
-// ✅ Acionar o alarme (define estado como "ligado")
+// aciona alarme: ligado
 router.post('/acionar', (req, res) => {
   const { id_alarme } = req.body;
 
@@ -25,7 +25,7 @@ router.post('/acionar', (req, res) => {
   );
 });
 
-// ✅ Desarmar o alarme (define estado como "desligado")
+// desarma alarme: desligado
 router.post('/desarmar', (req, res) => {
   const { id_alarme } = req.body;
 
@@ -48,7 +48,7 @@ router.post('/desarmar', (req, res) => {
   );
 });
 
-// ✅ Obter o último estado do alarme
+// pega ultimo estado do alarme
 router.get('/estado/:id_alarme', (req, res) => {
   const { id_alarme } = req.params;
 
